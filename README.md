@@ -73,6 +73,19 @@ Authentication tokens are stored in:
 
 To log out or switch accounts, delete this file.
 
+## Web Interface
+
+A browser-based interface is also available:
+
+```bash
+cd web
+python3 server.py
+```
+
+Then open http://localhost:8080 in your browser.
+
+The server includes a proxy to handle Tesla API requests (required due to CORS restrictions).
+
 ## License
 
 MIT

@@ -296,68 +296,72 @@ def format_timestamp(ts):
 
 
 def export_to_csv(rides, filename):
-    """Export rides to CSV file."""
+    """Export rides to CSV file with all available fields."""
     if not rides:
         print("No rides to export")
         return
 
+    # All fields from the API response
     fieldnames = [
-        "ride_id",
-        "started_at",
-        "completed_at",
-        "pickup_location",
-        "pickup_location_line2",
-        "dropoff_location",
-        "dropoff_location_line2",
-        "distance_miles",
-        "duration",
-        "duration_formatted",
-        "total_due",
-        "total_price",
-        "currency",
-        "fee_status",
-        "card_type",
-        "card_last_four",
-        "license_plate",
-        "timezone",
-        "pickup_lat",
-        "pickup_lng",
-        "dropoff_lat",
-        "dropoff_lng",
+        "rideIntegerId",
+        "rideId",
+        "state",
+        "status",
+        "rideRequestedAt",
+        "rideStartedAt",
+        "rideCompletedAt",
+        "timestamp",
+        "pickupLocationName",
+        "pickupLocationLatitude",
+        "pickupLocationLongitude",
+        "pickupLocationTimezone",
+        "dropoffLocationName",
+        "dropoffLocationLatitude",
+        "dropoffLocationLongitude",
+        "dropoffLocationTimezone",
+        "dropoffLocationAddressId",
+        "totalDistanceMiles",
+        "driveDistanceMiles",
+        "billedDistanceMiles",
+        "totalDurationSeconds",
+        "driveDurationSeconds",
+        "totalDue",
+        "totalDueTaxExcl",
+        "estimatedPrice",
+        "estimatedPriceCurrencyCode",
+        "currencyCode",
+        "rideFeeStatus",
+        "rideFeeProcessFlag",
+        "hasAdhocFee",
+        "vin",
+        "licensePlate",
+        "vehicleModel",
+        "countryCode",
+        "priceBookGuid",
+        "quoteId",
+        "txid",
+        "route",
+        "routeImageUrl",
+        "rideEta",
+        "fleetCongestionPercent",
+        "isValid",
+        "invalidReason",
+        "billOverrideReason",
+        "disputeReason",
+        "disputeComment",
+        "billingUserId",
+        "billingUserUuid",
+        "billingUserAddressId",
+        "riderSsoId",
     ]
 
     with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, extrasaction='ignore')
         writer.writeheader()
 
         for ride in rides:
-            pickup_coords = ride.get('pickupCoordinates', {}) or {}
-            dropoff_coords = ride.get('dropoffCoordinates', {}) or {}
-
-            row = {
-                "ride_id": ride.get('rideId') or ride.get('rideSessionId', ''),
-                "started_at": format_timestamp(ride.get('rideStartedAt')),
-                "completed_at": format_timestamp(ride.get('rideCompletedAt')),
-                "pickup_location": ride.get('pickupLocationName', ''),
-                "pickup_location_line2": ride.get('pickupLocationLine2', ''),
-                "dropoff_location": ride.get('dropoffLocationName', ''),
-                "dropoff_location_line2": ride.get('dropoffLocationLine2', ''),
-                "distance_miles": ride.get('totalDistanceMiles', ''),
-                "duration": ride.get('totalDuration', ''),
-                "duration_formatted": format_duration(ride.get('totalDuration')),
-                "total_due": ride.get('totalDue', ''),
-                "total_price": ride.get('totalPrice') or ride.get('totalPriceText', ''),
-                "currency": ride.get('currencyCode', ''),
-                "fee_status": ride.get('rideFeeStatus', ''),
-                "card_type": ride.get('cardType', ''),
-                "card_last_four": ride.get('lastFourDigits', ''),
-                "license_plate": ride.get('licensePlate', ''),
-                "timezone": ride.get('pickupLocationTimezone', ''),
-                "pickup_lat": pickup_coords.get('latitude', ''),
-                "pickup_lng": pickup_coords.get('longitude', ''),
-                "dropoff_lat": dropoff_coords.get('latitude', ''),
-                "dropoff_lng": dropoff_coords.get('longitude', ''),
-            }
+            # Write all fields directly from the API response
+            row = {field: ride.get(field, '') for field in fieldnames}
             writer.writerow(row)
 
     print(f"Exported {len(rides)} rides to {filename}")

@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robotaxi History</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0a0b;
+      --bg-secondary: #111113;
+      --bg-card: #161618;
+      --bg-card-hover: #1a1a1d;
+      --border: #2a2a2e;
+      --text-primary: #fafafa;
+      --text-secondary: #8a8a8e;
+      --text-muted: #5a5a5e;
+      --accent: #00d4aa;
+      --accent-dim: #00d4aa20;
+      --accent-glow: #00d4aa40;
+      --danger: #ff4757;
+      --warning: #ffa502;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background grid */
+    .bg-grid {
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .bg-gradient {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, var(--accent-dim), transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* App container */
+    .app {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--accent), #00a888);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--bg-primary);
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .logo-text h1 {
+      font-size: 24px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .btn-primary:hover {
+      background: #00e6b8;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: var(--danger);
+      border: 1px solid var(--danger);
+    }
+
+    .btn-danger:hover {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Auth Section */
+    .auth-container {
+      max-width: 560px;
+      margin: 80px auto;
+      text-align: center;
+    }
+
+    .auth-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 32px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+    }
+
+    .auth-container h2 {
+      font-size: 32px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-container p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .auth-steps {
+      text-align: left;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .auth-step {
+      display: flex;
+      gap: 16px;
+      padding: 16px 0;
+    }
+
+    .auth-step:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .step-number.active {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .step-number.done {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    .step-content h4 {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    /* Input */
+    .input-group {
+      margin-top: 24px;
+    }
+
+    .input-group label {
+      display: block;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper input {
+      width: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text-primary);
+      transition: all 0.2s;
+    }
+
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+
+    .input-wrapper input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -1px;
+    }
+
+    .stat-value .unit {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    /* Rides Grid */
+    .rides-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .rides-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .rides-count {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .rides-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    /* Ride Card */
+    .ride-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr 200px 120px 100px;
+      gap: 24px;
+      align-items: center;
+      transition: all 0.2s;
+      cursor: pointer;
+      animation: slideIn 0.4s ease backwards;
+    }
+
+    .ride-card:hover {
+      border-color: var(--text-muted);
+      background: var(--bg-card-hover);
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .ride-route {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .ride-location {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .location-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .location-dot.pickup {
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .location-dot.dropoff {
+      background: var(--text-secondary);
+    }
+
+    .location-line {
+      width: 2px;
+      height: 16px;
+      background: linear-gradient(to bottom, var(--accent), var(--text-muted));
+      margin-left: 4px;
+      margin-top: -8px;
+      margin-bottom: -8px;
+    }
+
+    .location-text {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .location-text .secondary {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .ride-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .ride-date {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .ride-time {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .ride-vehicle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-secondary);
+      padding: 4px 8px;
+      border-radius: 6px;
+      width: fit-content;
+      margin-top: 4px;
+    }
+
+    .ride-distance {
+      text-align: center;
+    }
+
+    .ride-distance .value {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .ride-distance .label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .ride-price {
+      text-align: right;
+    }
+
+    .ride-price .value {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .ride-price .status {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Ride Details Expandable */
+    .ride-card.expanded {
+      grid-template-columns: 1fr;
+    }
+
+    .ride-card.expanded .ride-summary {
+      display: grid;
+      grid-template-columns: 1fr 200px 120px 100px;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .ride-details {
+      display: none;
+      grid-column: 1 / -1;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    .ride-card.expanded .ride-details {
+      display: block;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .detail-section {
+      background: var(--bg-secondary);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .detail-section h4 {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      font-size: 13px;
+    }
+
+    .detail-row:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+    }
+
+    .detail-value {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-primary);
+      font-size: 12px;
+    }
+
+    .detail-value.highlight {
+      color: var(--accent);
+    }
+
+    .coord-link {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .coord-link:hover {
+      text-decoration: underline;
+    }
+
+    .expand-indicator {
+      color: var(--text-muted);
+      font-size: 12px;
+      transition: transform 0.2s;
+    }
+
+    .ride-card.expanded .expand-indicator {
+      transform: rotate(180deg);
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 20px;
+      gap: 20px;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .empty-state h3 {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      color: var(--text-secondary);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.error {
+      border-color: var(--danger);
+    }
+
+    .toast.success {
+      border-color: var(--accent);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .stats-bar {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .stats-bar {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .ride-card {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .ride-card.expanded .ride-summary {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .ride-meta, .ride-distance, .ride-price {
+        text-align: left;
+      }
+
+      .ride-distance, .ride-price {
+        display: inline-flex;
+        gap: 8px;
+        align-items: baseline;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+      }
+
+      .stats-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-value {
+        font-size: 22px;
+      }
+    }
+
+    /* Hide sections */
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-gradient"></div>
+
+  <div class="app">
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">R</div>
+        <div class="logo-text">
+          <h1>Robotaxi</h1>
+          <p>Ride History</p>
+        </div>
+      </div>
+      <div class="header-actions" id="headerActions">
+        <!-- Dynamic buttons appear here -->
+      </div>
+    </header>
+
+    <!-- Auth Section -->
+    <section id="authSection" class="auth-container">
+      <div class="auth-icon">🚗</div>
+      <h2>Connect Your Account</h2>
+      <p>Sign in with your Tesla account to view your Robotaxi ride history.</p>
+
+      <div class="auth-steps">
+        <div class="auth-step" id="step1">
+          <div class="step-number active">1</div>
+          <div class="step-content">
+            <h4>Sign in with Tesla</h4>
+            <p>Click the button below to open Tesla's login page</p>
+          </div>
+        </div>
+        <div class="auth-step" id="step2">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Copy the callback URL</h4>
+            <p>After login, copy the full URL from your browser</p>
+          </div>
+        </div>
+        <div class="auth-step" id="step3">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Paste it below</h4>
+            <p>We'll exchange it for an access token</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="startAuthBtn" style="width: 100%;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+          <polyline points="10 17 15 12 10 7"/>
+          <line x1="15" y1="12" x2="3" y2="12"/>
+        </svg>
+        Sign in with Tesla
+      </button>
+
+      <div class="input-group hidden" id="callbackInput">
+        <label>Paste the callback URL here</label>
+        <div class="input-wrapper">
+          <input type="text" id="callbackUrl" placeholder="https://auth.tesla.com/void/callback?code=...">
+        </div>
+        <button class="btn btn-primary" id="submitCallbackBtn" style="width: 100%; margin-top: 12px;">
+          Complete Authentication
+        </button>
+      </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboardSection" class="hidden">
+      <div class="stats-bar">
+        <div class="stat-card">
+          <div class="stat-label">Total Rides</div>
+          <div class="stat-value" id="statRides">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Distance</div>
+          <div class="stat-value"><span id="statDistance">0</span><span class="unit">mi</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Time</div>
+          <div class="stat-value"><span id="statDuration">0</span><span class="unit">hrs</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Spent</div>
+          <div class="stat-value">$<span id="statSpent">0</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Avg. per Ride</div>
+          <div class="stat-value">$<span id="statAvg">0</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Unique Vehicles</div>
+          <div class="stat-value" id="statVehicles">0</div>
+        </div>
+      </div>
+
+      <div class="rides-header">
+        <h2>Your Rides</h2>
+        <span class="rides-count" id="ridesCount"></span>
+      </div>
+
+      <div id="ridesContainer">
+        <div class="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">Loading your rides...</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Tesla OAuth Configuration
+    const AUTH_BASE_URL = 'https://auth.tesla.com/oauth2/v3';
+    const CLIENT_ID = 'ownerapi';
+    const REDIRECT_URI = 'https://auth.tesla.com/void/callback';
+    const SCOPES = 'openid email offline_access phone';
+
+    // Use local proxy to avoid CORS
+    const TOKEN_ENDPOINT = '/api/token';
+    const RIDES_ENDPOINT = '/api/rides';
+
+    // State
+    let state = {
+      codeVerifier: null,
+      accessToken: null,
+      refreshToken: null,
+      rides: [],
+    };
+
+    // DOM Elements
+    const authSection = document.getElementById('authSection');
+    const dashboardSection = document.getElementById('dashboardSection');
+    const headerActions = document.getElementById('headerActions');
+    const startAuthBtn = document.getElementById('startAuthBtn');
+    const callbackInput = document.getElementById('callbackInput');
+    const callbackUrlInput = document.getElementById('callbackUrl');
+    const submitCallbackBtn = document.getElementById('submitCallbackBtn');
+    const ridesContainer = document.getElementById('ridesContainer');
+
+    // Initialize
+    function init() {
+      loadTokens();
+
+      if (state.accessToken && state.refreshToken) {
+        showDashboard();
+        refreshAndFetch();
+      } else {
+        showAuth();
+      }
+
+      // Event listeners
+      startAuthBtn.addEventListener('click', startAuth);
+      submitCallbackBtn.addEventListener('click', completeAuth);
+      callbackUrlInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') completeAuth();
+      });
+    }
+
+    // PKCE Helper
+    function generatePKCE() {
+      const array = new Uint8Array(32);
+      crypto.getRandomValues(array);
+      const verifier = base64UrlEncode(array);
+
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier))
+        .then(hash => ({
+          verifier,
+          challenge: base64UrlEncode(new Uint8Array(hash))
+        }));
+    }
+
+    function base64UrlEncode(buffer) {
+      return btoa(String.fromCharCode(...buffer))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+
+    // Auth Flow
+    async function startAuth() {
+      const pkce = await generatePKCE();
+      state.codeVerifier = pkce.verifier;
+      localStorage.setItem('robotaxi_pkce', pkce.verifier);
+
+      const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: CLIENT_ID,
+        redirect_uri: REDIRECT_URI,
+        scope: SCOPES,
+        state: base64UrlEncode(crypto.getRandomValues(new Uint8Array(16))),
+        code_challenge: pkce.challenge,
+        code_challenge_method: 'S256',
+      });
+
+      const authUrl = `${AUTH_BASE_URL}/authorize?${params}`;
+      window.open(authUrl, '_blank');
+
+      // Update UI
+      document.querySelector('#step1 .step-number').classList.remove('active');
+      document.querySelector('#step1 .step-number').classList.add('done');
+      document.querySelector('#step1 .step-number').textContent = '✓';
+      document.querySelector('#step2 .step-number').classList.add('active');
+
+      startAuthBtn.classList.add('hidden');
+      callbackInput.classList.remove('hidden');
+      callbackUrlInput.focus();
+    }
+
+    async function completeAuth() {
+      const callbackUrl = callbackUrlInput.value.trim();
+      if (!callbackUrl) {
+        showToast('Please paste the callback URL', 'error');
+        return;
+      }
+
+      const verifier = state.codeVerifier || localStorage.getItem('robotaxi_pkce');
+      if (!verifier) {
+        showToast('No pending authentication. Please start over.', 'error');
+        return;
+      }
+
+      try {
+        const url = new URL(callbackUrl);
+        const code = url.searchParams.get('code');
+        if (!code) {
+          showToast('No authorization code found in URL', 'error');
+          return;
+        }
+
+        submitCallbackBtn.disabled = true;
+        submitCallbackBtn.textContent = 'Authenticating...';
+
+        const response = await fetch(TOKEN_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'authorization_code',
+            client_id: CLIENT_ID,
+            code: code,
+            code_verifier: verifier,
+            redirect_uri: REDIRECT_URI,
+          }),
+        });
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`Auth failed: ${response.status}`);
+        }
+
+        const tokens = await response.json();
+        state.accessToken = tokens.access_token;
+        state.refreshToken = tokens.refresh_token;
+        saveTokens();
+        localStorage.removeItem('robotaxi_pkce');
+
+        showToast('Authentication successful!', 'success');
+        showDashboard();
+        fetchRides();
+
+      } catch (error) {
+        console.error('Auth error:', error);
+        showToast(error.message, 'error');
+        submitCallbackBtn.disabled = false;
+        submitCallbackBtn.textContent = 'Complete Authentication';
+      }
+    }
+
+    async function refreshToken() {
+      if (!state.refreshToken) return false;
+
+      try {
+        const response = await fetch(TOKEN_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'refresh_token',
+            client_id: CLIENT_ID,
+            refresh_token: state.refreshToken,
+          }),
+        });
+
+        if (!response.ok) return false;
+
+        const tokens = await response.json();
+        state.accessToken = tokens.access_token;
+        if (tokens.refresh_token) {
+          state.refreshToken = tokens.refresh_token;
+        }
+        saveTokens();
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // Token Storage
+    function saveTokens() {
+      localStorage.setItem('robotaxi_tokens', JSON.stringify({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+      }));
+    }
+
+    function loadTokens() {
+      try {
+        const data = JSON.parse(localStorage.getItem('robotaxi_tokens'));
+        if (data) {
+          state.accessToken = data.accessToken;
+          state.refreshToken = data.refreshToken;
+        }
+      } catch {}
+    }
+
+    function logout() {
+      localStorage.removeItem('robotaxi_tokens');
+      localStorage.removeItem('robotaxi_pkce');
+      state = { codeVerifier: null, accessToken: null, refreshToken: null, rides: [] };
+      location.reload();
+    }
+
+    // API
+    async function fetchRides() {
+      let allRides = [];
+      let page = 1;
+
+      ridesContainer.innerHTML = `
+        <div class="loading">
+          <div class="spinner"></div>
+          <div class="loading-text">Loading your rides...</div>
+        </div>
+      `;
+
+      while (true) {
+        const result = await fetchRidePage(page);
+        if (!result || !result.rides || result.rides.length === 0) break;
+
+        allRides = allRides.concat(result.rides);
+        if (result.rides.length < 100) break;
+        page++;
+      }
+
+      state.rides = allRides;
+      renderRides();
+    }
+
+    async function fetchRidePage(page) {
+      const params = new URLSearchParams({
+        pageNo: page,
+        deviceLanguage: 'en',
+        deviceCountry: 'US',
+        ttpLocale: 'en_US',
+      });
+
+      try {
+        const response = await fetch(`${RIDES_ENDPOINT}?${params}`, {
+          headers: {
+            'Authorization': `Bearer ${state.accessToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          return data.data || data;
+        }
+
+        if (response.status === 401) {
+          return null;
+        }
+      } catch (e) {
+        console.error('Fetch error:', e);
+      }
+
+      return null;
+    }
+
+    async function refreshAndFetch() {
+      const refreshed = await refreshToken();
+      if (refreshed) {
+        fetchRides();
+      } else {
+        showToast('Session expired. Please sign in again.', 'error');
+        logout();
+      }
+    }
+
+    // UI
+    function showAuth() {
+      authSection.classList.remove('hidden');
+      dashboardSection.classList.add('hidden');
+      headerActions.innerHTML = '';
+    }
+
+    function showDashboard() {
+      authSection.classList.add('hidden');
+      dashboardSection.classList.remove('hidden');
+      headerActions.innerHTML = `
+        <button class="btn btn-secondary" onclick="fetchRides()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          Refresh
+        </button>
+        <button class="btn btn-secondary" onclick="exportCSV()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          CSV
+        </button>
+        <button class="btn btn-secondary" onclick="exportJSON()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+          JSON
+        </button>
+        <button class="btn btn-danger" onclick="logout()">Sign Out</button>
+      `;
+    }
+
+    function formatDuration(seconds) {
+      if (!seconds) return '0m';
+      const hrs = Math.floor(seconds / 3600);
+      const mins = Math.floor((seconds % 3600) / 60);
+      if (hrs > 0) return `${hrs}h ${mins}m`;
+      return `${mins}m`;
+    }
+
+    function getServiceArea(timezone) {
+      const tzMap = {
+        'America/Chicago': 'Austin, TX',
+        'America/Los_Angeles': 'Bay Area, CA',
+        'America/Phoenix': 'Phoenix, AZ',
+        'America/New_York': 'East Coast',
+      };
+      return tzMap[timezone] || timezone || 'Unknown';
+    }
+
+    // VIN Decoder using NHTSA API (free, no auth required)
+    const vinCache = {};
+
+    async function decodeVIN(vin) {
+      if (!vin) return null;
+      if (vinCache[vin]) return vinCache[vin];
+
+      try {
+        const response = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`);
+        if (!response.ok) return null;
+
+        const data = await response.json();
+        const results = data.Results || [];
+
+        const getValue = (variableId) => {
+          const item = results.find(r => r.VariableId === variableId);
+          return item?.Value || null;
+        };
+
+        const decoded = {
+          make: getValue(26),
+          model: getValue(28),
+          year: getValue(29),
+          bodyClass: getValue(5),
+          driveType: getValue(15),
+          fuelType: getValue(24),
+          plantCity: getValue(31),
+          plantState: getValue(32),
+          plantCountry: getValue(33),
+          manufacturer: getValue(27),
+          vehicleType: getValue(39),
+          doors: getValue(14),
+          electrification: getValue(126),
+          evDriveUnit: getValue(127),
+          batteryType: getValue(69),
+          batteryKWh: getValue(70),
+        };
+
+        vinCache[vin] = decoded;
+        return decoded;
+      } catch (e) {
+        console.error('VIN decode error:', e);
+        return null;
+      }
+    }
+
+    // Decode all unique VINs in ride data
+    async function decodeAllVINs() {
+      const uniqueVINs = [...new Set(state.rides.map(r => r.vin).filter(Boolean))];
+      const decodePromises = uniqueVINs.map(vin => decodeVIN(vin));
+      await Promise.all(decodePromises);
+    }
+
+    function toggleRideDetails(index) {
+      const card = document.querySelector(`[data-ride-index="${index}"]`);
+      if (card) {
+        card.classList.toggle('expanded');
+      }
+    }
+
+    async function renderRides() {
+      if (state.rides.length === 0) {
+        ridesContainer.innerHTML = `
+          <div class="empty-state">
+            <h3>No rides found</h3>
+            <p>Your Robotaxi ride history will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Decode all VINs in parallel
+      await decodeAllVINs();
+
+      // Calculate stats
+      const totalDistance = state.rides.reduce((sum, r) => sum + (parseFloat(r.totalDistanceMiles) || 0), 0);
+      const totalSpent = state.rides.reduce((sum, r) => sum + (parseFloat(r.totalDue) || 0), 0);
+      const totalDuration = state.rides.reduce((sum, r) => sum + (parseInt(r.totalDurationSeconds) || 0), 0);
+      const uniqueVehicles = new Set(state.rides.map(r => r.vin).filter(Boolean)).size;
+
+      document.getElementById('statRides').textContent = state.rides.length;
+      document.getElementById('statDistance').textContent = totalDistance.toFixed(1);
+      document.getElementById('statDuration').textContent = (totalDuration / 3600).toFixed(1);
+      document.getElementById('statSpent').textContent = totalSpent.toFixed(2);
+      document.getElementById('statAvg').textContent = (totalSpent / state.rides.length).toFixed(2);
+      document.getElementById('statVehicles').textContent = uniqueVehicles;
+      document.getElementById('ridesCount').textContent = `${state.rides.length} rides`;
+
+      // Render rides
+      const html = state.rides.map((ride, i) => {
+        const startDate = ride.rideStartedAt ? new Date(ride.rideStartedAt) : null;
+        const endDate = ride.rideCompletedAt ? new Date(ride.rideCompletedAt) : null;
+        const requestedDate = ride.rideRequestedAt ? new Date(ride.rideRequestedAt) : null;
+        const dateStr = startDate ? startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const timeStr = startDate ? startDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+        const endTimeStr = endDate ? endDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : '';
+        const serviceArea = getServiceArea(ride.pickupLocationTimezone);
+        const duration = formatDuration(ride.totalDurationSeconds);
+
+        const pickupCoords = ride.pickupLocationLatitude && ride.pickupLocationLongitude
+          ? `${ride.pickupLocationLatitude.toFixed(6)}, ${ride.pickupLocationLongitude.toFixed(6)}`
+          : 'N/A';
+        const dropoffCoords = ride.dropoffLocationLatitude && ride.dropoffLocationLongitude
+          ? `${ride.dropoffLocationLatitude.toFixed(6)}, ${ride.dropoffLocationLongitude.toFixed(6)}`
+          : 'N/A';
+        const mapsPickupUrl = ride.pickupLocationLatitude ? `https://maps.google.com/?q=${ride.pickupLocationLatitude},${ride.pickupLocationLongitude}` : '#';
+        const mapsDropoffUrl = ride.dropoffLocationLatitude ? `https://maps.google.com/?q=${ride.dropoffLocationLatitude},${ride.dropoffLocationLongitude}` : '#';
+
+        return `
+          <div class="ride-card" data-ride-index="${i}" onclick="toggleRideDetails(${i})" style="animation-delay: ${i * 0.05}s">
+            <div class="ride-route">
+              <div class="ride-location">
+                <div class="location-dot pickup"></div>
+                <div class="location-text">
+                  ${ride.pickupLocationName || 'Pickup'}
+                  <div class="secondary">${serviceArea}</div>
+                </div>
+              </div>
+              <div class="location-line"></div>
+              <div class="ride-location">
+                <div class="location-dot dropoff"></div>
+                <div class="location-text">
+                  ${ride.dropoffLocationName || 'Dropoff'}
+                  <div class="secondary">${duration} ride</div>
+                </div>
+              </div>
+            </div>
+            <div class="ride-meta">
+              <div class="ride-date">${dateStr}</div>
+              <div class="ride-time">${timeStr} - ${endTimeStr}</div>
+              <div class="ride-vehicle">${ride.vehicleModel || ''} ${ride.licensePlate ? `(${ride.licensePlate})` : ''}</div>
+            </div>
+            <div class="ride-distance">
+              <div class="value">${parseFloat(ride.totalDistanceMiles || 0).toFixed(2)}</div>
+              <div class="label">miles</div>
+            </div>
+            <div class="ride-price">
+              <div class="value">$${parseFloat(ride.totalDue || 0).toFixed(2)}</div>
+              <div class="status">${ride.rideFeeStatus === 'RideFeePaid' ? 'Paid' : ride.state || ''}</div>
+              <div class="expand-indicator">▼</div>
+            </div>
+
+            <div class="ride-details" onclick="event.stopPropagation()">
+              <div class="details-grid">
+                <div class="detail-section">
+                  <h4>Location Details</h4>
+                  <div class="detail-row">
+                    <span class="detail-label">Pickup Coords</span>
+                    <a class="coord-link" href="${mapsPickupUrl}" target="_blank">${pickupCoords}</a>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Dropoff Coords</span>
+                    <a class="coord-link" href="${mapsDropoffUrl}" target="_blank">${dropoffCoords}</a>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Timezone</span>
+                    <span class="detail-value">${ride.pickupLocationTimezone || 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Service Area</span>
+                    <span class="detail-value highlight">${serviceArea}</span>
+                  </div>
+                </div>
+
+                <div class="detail-section">
+                  <h4>Trip Metrics</h4>
+                  <div class="detail-row">
+                    <span class="detail-label">Total Distance</span>
+                    <span class="detail-value">${ride.totalDistanceMiles?.toFixed(2) || '0'} mi</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Drive Distance</span>
+                    <span class="detail-value">${ride.driveDistanceMiles?.toFixed(2) || '0'} mi</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Billed Distance</span>
+                    <span class="detail-value">${ride.billedDistanceMiles?.toFixed(2) || '0'} mi</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Duration</span>
+                    <span class="detail-value">${formatDuration(ride.totalDurationSeconds)}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Drive Duration</span>
+                    <span class="detail-value">${formatDuration(ride.driveDurationSeconds)}</span>
+                  </div>
+                </div>
+
+                <div class="detail-section">
+                  <h4>Pricing</h4>
+                  <div class="detail-row">
+                    <span class="detail-label">Estimated</span>
+                    <span class="detail-value">$${ride.estimatedPrice?.toFixed(2) || '0.00'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Total Due</span>
+                    <span class="detail-value highlight">$${ride.totalDue?.toFixed(2) || '0.00'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Currency</span>
+                    <span class="detail-value">${ride.currencyCode || 'USD'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Status</span>
+                    <span class="detail-value">${ride.rideFeeStatus || 'N/A'}</span>
+                  </div>
+                </div>
+
+                <div class="detail-section">
+                  <h4>Vehicle</h4>
+                  <div class="detail-row">
+                    <span class="detail-label">Model</span>
+                    <span class="detail-value">${ride.vehicleModel || 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">License Plate</span>
+                    <span class="detail-value">${ride.licensePlate || 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">VIN</span>
+                    <span class="detail-value">${ride.vin || 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Country</span>
+                    <span class="detail-value">${ride.countryCode || 'N/A'}</span>
+                  </div>
+                </div>
+
+                <div class="detail-section">
+                  <h4>Timestamps</h4>
+                  <div class="detail-row">
+                    <span class="detail-label">Requested</span>
+                    <span class="detail-value">${requestedDate ? requestedDate.toLocaleString() : 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Started</span>
+                    <span class="detail-value">${startDate ? startDate.toLocaleString() : 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Completed</span>
+                    <span class="detail-value">${endDate ? endDate.toLocaleString() : 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">State</span>
+                    <span class="detail-value">${ride.state || 'N/A'}</span>
+                  </div>
+                </div>
+
+                <div class="detail-section">
+                  <h4>Identifiers</h4>
+                  <div class="detail-row">
+                    <span class="detail-label">Ride ID</span>
+                    <span class="detail-value" style="font-size: 10px;">${ride.rideId || 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Integer ID</span>
+                    <span class="detail-value">${ride.rideIntegerId || 'N/A'}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Price Book</span>
+                    <span class="detail-value" style="font-size: 10px;">${ride.priceBookGuid?.slice(0, 8) || 'N/A'}...</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="detail-label">Quote ID</span>
+                    <span class="detail-value" style="font-size: 10px;">${ride.quoteId?.slice(0, 8) || 'N/A'}...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      ridesContainer.innerHTML = `<div class="rides-grid">${html}</div>`;
+    }
+
+    function exportCSV() {
+      if (state.rides.length === 0) {
+        showToast('No rides to export', 'error');
+        return;
+      }
+
+      // All fields from the API
+      const headers = [
+        'rideIntegerId', 'rideId', 'state', 'status',
+        'rideRequestedAt', 'rideStartedAt', 'rideCompletedAt', 'timestamp',
+        'pickupLocationName', 'pickupLocationLatitude', 'pickupLocationLongitude', 'pickupLocationTimezone',
+        'dropoffLocationName', 'dropoffLocationLatitude', 'dropoffLocationLongitude', 'dropoffLocationTimezone', 'dropoffLocationAddressId',
+        'totalDistanceMiles', 'driveDistanceMiles', 'billedDistanceMiles',
+        'totalDurationSeconds', 'driveDurationSeconds',
+        'totalDue', 'totalDueTaxExcl', 'estimatedPrice', 'estimatedPriceCurrencyCode', 'currencyCode',
+        'rideFeeStatus', 'rideFeeProcessFlag', 'hasAdhocFee',
+        'vin', 'licensePlate', 'vehicleModel', 'countryCode',
+        'priceBookGuid', 'quoteId', 'txid',
+        'route', 'routeImageUrl', 'rideEta', 'fleetCongestionPercent',
+        'isValid', 'invalidReason', 'billOverrideReason', 'disputeReason', 'disputeComment',
+        'billingUserId', 'billingUserUuid', 'billingUserAddressId', 'riderSsoId'
+      ];
+
+      const rows = state.rides.map(r =>
+        headers.map(h => {
+          const v = r[h];
+          if (v === null || v === undefined) return '""';
+          return `"${String(v).replace(/"/g, '""')}"`;
+        }).join(',')
+      );
+
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `robotaxi_history_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      showToast(`Exported ${state.rides.length} rides to CSV`, 'success');
+    }
+
+    function exportJSON() {
+      if (state.rides.length === 0) {
+        showToast('No rides to export', 'error');
+        return;
+      }
+
+      const json = JSON.stringify(state.rides, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `robotaxi_history_${new Date().toISOString().split('T')[0]}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      showToast(`Exported ${state.rides.length} rides to JSON`, 'success');
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = `toast ${type} show`;
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // Start
+    init();
+  </script>
+</body>
+</html>
